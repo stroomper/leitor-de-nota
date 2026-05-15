@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leitor NFC-e</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/html5-qrcode" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" defer></script>
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">NFC-e no celular</p>
+        <h1>Leitor de notas fiscais</h1>
+      </div>
+      <div class="status-pill" id="storageStatus">Pronto</div>
+    </header>
+
+    <section class="stats-grid" aria-label="Resumo">
+      <article class="metric">
+        <span>Notas importadas</span>
+        <strong id="notesCount">0</strong>
+      </article>
+      <article class="metric">
+        <span>Itens salvos</span>
+        <strong id="itemsCount">0</strong>
+      </article>
+      <article class="metric total">
+        <span>Total gasto</span>
+        <strong id="totalSpent">R$ 0,00</strong>
+      </article>
+    </section>
+
+    <section class="panel scanner-panel">
+      <div class="section-heading">
+        <div>
+          <h2>Ler QR Code</h2>
+          <p>Aponte para o QR Code da NFC-e impresso no cupom.</p>
+        </div>
+        <button class="ghost-button" id="stopScannerBtn" type="button" disabled>Parar câmera</button>
+      </div>
+
+      <div id="reader" class="reader-box" aria-label="Leitor de QR Code"></div>
+
+      <div class="action-row">
+        <button class="primary-button" id="startScannerBtn" type="button">Abrir câmera</button>
+        <button class="secondary-button" id="retryFetchBtn" type="button" disabled>Tentar baixar URL</button>
+      </div>
+
+      <label class="field">
+        <span>URL capturada</span>
+        <input id="qrUrlInput" type="url" placeholder="A URL da NFC-e aparecerá aqui" autocomplete="off">
+      </label>
+    </section>
+
+    <section class="panel">
+      <div class="section-heading">
+        <div>
+          <h2>Importar XML</h2>
+          <p>Selecione um ou mais arquivos XML ou cole o conteúdo da nota.</p>
+        </div>
+      </div>
+
+      <label class="file-drop" for="xmlFileInput">
+        <input id="xmlFileInput" type="file" accept=".xml,text/xml,application/xml" multiple>
+        <span>Escolher arquivos XML</span>
+        <small>O app detecta automaticamente a estrutura da NFC-e.</small>
+      </label>
+
+      <label class="field">
+        <span>Colar XML manualmente</span>
+        <textarea id="xmlTextInput" rows="6" placeholder="Cole aqui o XML completo da NFC-e"></textarea>
+      </label>
+
+      <div class="action-row">
+        <button class="secondary-button" id="importTextBtn" type="button">Importar XML colado</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-heading">
+        <div>
+          <h2>Itens importados</h2>
+          <p id="tableHint">Nenhuma nota importada ainda.</p>
+        </div>
+        <div class="button-group">
+          <button class="secondary-button" id="exportBtn" type="button" disabled>Exportar Excel</button>
+          <button class="danger-button" id="clearBtn" type="button" disabled>Limpar histórico</button>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Estabelecimento</th>
+              <th>Produto</th>
+              <th>Qtd.</th>
+              <th>Unitário</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody id="itemsTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </main>
+</body>
+</html>
